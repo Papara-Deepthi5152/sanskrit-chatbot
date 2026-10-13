@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="sa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>वाग्देवी • Vāgdevī — Sanskrit Conversational AI</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <div class="om-symbol">ॐ</div>
+                <div class="brand-text">
+                    <h2>वाग्देवी</h2>
+                    <span class="sub-brand">VĀGDEVĪ &bull; SANSKRIT AI</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="chat-view">
+                    <i class="fa-solid fa-comments"></i> <span>संभाषणम् (Chat)</span>
+                </button>
+                <button class="nav-item" data-tab="grammar-view">
+                    <i class="fa-solid fa-book-open"></i> <span>व्याकरणम् (Grammar)</span>
+                </button>
+                <button class="nav-item" data-tab="sandhi-view">
+                    <i class="fa-solid fa-link"></i> <span>सन्धि-शाला (Sandhi)</span>
+                </button>
+                <button class="nav-item" data-tab="shloka-view">
+                    <i class="fa-solid fa-scroll"></i> <span>सुभाषितानि (Wisdom)</span>
+                </button>
+                <button class="nav-item" data-tab="quiz-view">
+                    <i class="fa-solid fa-trophy"></i> <span>प्रश्नोत्तरी (Quiz)</span>
+                </button>
+            </nav>
+
+            <div class="shloka-of-day-card">
+                <div class="sod-badge"><i class="fa-solid fa-sparkles"></i> सुभाषित-दीपिका</div>
+                <div id="sidebar-sod-text" class="sod-text">विद्या ददाति विनयं विनयाद्याति पात्रताम्...</div>
+                <button id="btn-refresh-sod" class="btn-sod-refresh"><i class="fa-solid fa-rotate-right"></i> नवीनम् (New)</button>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="audio-control">
+                    <label for="voice-select"><i class="fa-solid fa-volume-high"></i> उच्चारणम् (Voice):</label>
+                    <select id="voice-select" class="form-select"></select>
+                </div>
+                <p class="copyright">जयतु संस्कृतम्! जयतु भारतम्!</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="app-header">
+                <div class="header-left">
+                    <button id="sidebar-toggle" class="sidebar-toggle-btn" aria-label="Toggle menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="header-status">
+                        <span class="status-dot"></span>
+                        <span class="status-text">वाग्देवी सिद्धा अस्ति (Vāgdevī is ready)</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="btn-toggle-keyboard" class="btn-header-tool" title="Devanagari Helper Toolbar">
+                        <i class="fa-solid fa-keyboard"></i> वर्णमाला
+                    </button>
+                    <button id="btn-clear-chat" class="btn-header-tool" title="Clear conversation">
+                        <i class="fa-solid fa-trash-can"></i> स्वच्छम्
+                    </button>
+                </div>
+            </header>
+
+            <!-- TAB 1: Chat View -->
+            <section id="chat-view" class="tab-pane active">
+                <div class="chat-container">
+                    <div id="messages-list" class="messages-list">
+                        <!-- Welcome Bot Message -->
+                        <div class="message-bubble bot-message" data-id="msg-welcome">
+                            <div class="avatar"><i class="fa-solid fa-feather-pointed"></i></div>
+                            <div class="message-body">
+                                <div class="msg-header">
+                                    <span class="sender-name">वाग्देवी (Vāgdevī)</span>
+                                    <div class="msg-tools">
+                                        <button class="btn-tool btn-speak" title="Pronounce Sanskrit" data-text="नमो नमः! भवते नमस्कारः। अहम् भवतां संस्कृत-सहायकः अस्मि।"><i class="fa-solid fa-volume-high"></i></button>
+                                        <button class="btn-tool btn-copy" title="Copy text" data-text="नमो नमः! भवते नमस्कारः।"><i class="fa-regular fa-copy"></i></button>
+                                    </div>
+                                </div>
+                                <div class="sa-text">नमो नमः! भवते नमस्कारः। अहम् भवतां संस्कृत-सहायकः अस्मि।</div>
+                                <div class="iast-text">Namo namaḥ! Bhavate namaskāraḥ. Aham bhavatāṃ saṃskṛta-sahāyakaḥ asmi.</div>
+                                <div class="en-text">
+                                    Welcome! I am your AI companion for conversational Sanskrit, Paninian grammar, Gita verses, and vocabulary. You may converse in Devanagari (<strong>नमस्ते</strong>), phonetic English (<strong>katham asti bhavan</strong>), or English!
+                                </div>
+                                <div class="prompt-chips">
+                                    <button class="chip" data-query="सुप्रभातम्!">🌅 सुप्रभातम्!</button>
+                                    <button class="chip" data-query="कथम् अस्ति भवान्?">💬 कथम् अस्ति भवान्?</button>
+                                    <button class="chip" data-query="Tell me a Gita shloka">📜 Bhagavad Gita Shloka</button>
+                                    <button class="chip" data-query="Rama shabda table">📚 राम शब्दरूपम्</button>
+                                    <button class="chip" data-query="vidya + alaya">⚡ vidya + alaya</button>
+                                    <button class="chip" data-query="Start quiz">🎯 संस्कृत प्रश्नोत्तरी</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Devanagari Virtual Toolbar (Toggleable) -->
+                    <div id="devanagari-toolbar" class="devanagari-toolbar hidden">
+                        <div class="toolbar-section">
+                            <span class="tb-label">स्वर/मात्रा:</span>
+                            <div class="tb-buttons">
+                                <button class="tb-btn" data-insert="अ">अ</button>
+                                <button class="tb-btn" data-insert="आ">आ</button>
+                                <button class="tb-btn" data-insert="इ">इ</button>
+                                <button class="tb-btn" data-insert="ई">ई</button>
+                                <button class="tb-btn" data-insert="उ">उ</button>
+                                <button class="tb-btn" data-insert="ऊ">ऊ</button>
+                                <button class="tb-btn" data-insert="ऋ">ऋ</button>
+                                <button class="tb-btn" data-insert="ए">ए</button>
+                                <button class="tb-btn" data-insert="ऐ">ऐ</button>
+                                <button class="tb-btn" data-insert="ओ">ओ</button>
+                                <button class="tb-btn" data-insert="औ">औ</button>
+                                <button class="tb-btn" data-insert="ं">ं (M)</button>
+                                <button class="tb-btn" data-insert="ः">ः (H)</button>
+                                <button class="tb-btn" data-insert="्">् (Virama)</button>
+                                <button class="tb-btn" data-insert="ऽ">ऽ (Avagraha)</button>
+                                <button class="tb-btn" data-insert="ॐ">ॐ</button>
+                            </div>
+                        </div>
+                        <div class="toolbar-section">
+                            <span class="tb-label">वाक्यांशाः:</span>
+                            <div class="tb-buttons">
+                                <button class="tb-btn phrase-btn" data-insert="नमस्ते ">नमस्ते</button>
+                                <button class="tb-btn phrase-btn" data-insert="शुभप्रभातम् ">शुभप्रभातम्</button>
+                                <button class="tb-btn phrase-btn" data-insert="धन्यवादः ">धन्यवादः</button>
+                                <button class="tb-btn phrase-btn" data-insert="पुनर्मिलामः ">पुनर्मिलामः</button>
+                                <button class="tb-btn phrase-btn" data-insert="कथम् अस्ति भवान्? ">कथम् अस्ति?</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Realtime Transliteration Hint Preview -->
+                    <div id="translit-preview-bar" class="translit-preview-bar hidden">
+                        <span class="tp-label"><i class="fa-solid fa-language"></i> Devanagari Preview:</span>
+                        <span id="translit-preview-text" class="tp-text"></span>
+                        <button id="btn-use-preview" class="btn-use-preview">Use (प्रयुज्यताम्)</button>
+                    </div>
+
+                    <!-- Input Bar -->
+                    <div class="chat-input-bar">
+                        <button id="btn-voice-input" class="btn-input-tool" title="Voice Input (Speech to Text)">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <div class="input-wrapper">
+                            <input type="text" id="chat-input" placeholder="संस्कृतेन अथवा आङ्ग्लभाषया लिखतु... (Type in Sanskrit or English)" autocomplete="off">
+                        </div>
+                        <button id="btn-send-message" class="btn-send" title="Send message">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: Grammar View -->
+            <section id="grammar-view" class="tab-pane">
+                <div class="content-container">
+                    <div class="section-title">
+                        <h2>संस्कृत-व्याकरणम् (Sanskrit Grammar Hub)</h2>
+                        <p>Explore comprehensive Shabdarupa (Noun declensions across 8 Vibhaktis) and Dhaturupa (Verb conjugations across Lakaras).</p>
+                    </div>
+
+                    <div class="grammar-selectors">
+                        <div class="selector-box">
+                            <label><i class="fa-solid fa-book"></i> शब्दरूपाणि (Noun Declensions):</label>
+                            <div class="btn-group-chips">
+                                <button class="btn-gram-chip active" data-type="shabda" data-name="rama">राम (Rāma)</button>
+                                <button class="btn-gram-chip" data-type="shabda" data-name="lata">लता (Latā)</button>
+                                <button class="btn-gram-chip" data-type="shabda" data-name="phala">फल (Phala)</button>
+                                <button class="btn-gram-chip" data-type="shabda" data-name="asmad">अस्मद् (Asmad - I/We)</button>
+                                <button class="btn-gram-chip" data-type="shabda" data-name="yushmad">युष्मद् (Yuṣmad - You)</button>
+                            </div>
+                        </div>
+                        <div class="selector-box">
+                            <label><i class="fa-solid fa-bolt"></i> धातुरूपाणि (Verb Roots):</label>
+                            <div class="btn-group-chips">
+                                <button class="btn-gram-chip" data-type="dhatu" data-name="path">पठ् (Paṭh - Read)</button>
+                                <button class="btn-gram-chip" data-type="dhatu" data-name="gam">गम् (Gam - Go)</button>
+                                <button class="btn-gram-chip" data-type="dhatu" data-name="kri">कृ (Kṛ - Do)</button>
+                                <button class="btn-gram-chip" data-type="dhatu" data-name="bhu">भू (Bhū - Be)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="grammar-display-area" class="grammar-display-area">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: Sandhi Studio View -->
+            <section id="sandhi-view" class="tab-pane">
+                <div class="content-container">
+                    <div class="section-title">
+                        <h2>सन्धि-शाला (Sandhi Studio)</h2>
+                        <p>Join Sanskrit words phonologically and discover the governing Paninian Sutras.</p>
+                    </div>
+
+                    <div class="sandhi-interactive-box card">
+                        <h3>सन्धि-संयोगः (Interactive Sandhi Solver)</h3>
+                        <div class="sandhi-inputs-row">
+                            <div class="input-col">
+                                <label>प्रथमपदम् (First Word):</label>
+                                <input type="text" id="sandhi-w1" placeholder="e.g. विद्या or vidya" value="विद्या">
+                            </div>
+                            <div class="plus-icon"><i class="fa-solid fa-plus"></i></div>
+                            <div class="input-col">
+                                <label>द्वितीयपदम् (Second Word):</label>
+                                <input type="text" id="sandhi-w2" placeholder="e.g. आलयः or alaya" value="आलयः">
+                            </div>
+                            <button id="btn-sandhi-solve" class="btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> सन्धिं कुरु (Join)</button>
+                        </div>
+
+                        <div id="sandhi-live-result" class="sandhi-live-result">
+                            <!-- Result rendered here -->
+                        </div>
+                    </div>
+
+                    <div class="sandhi-rules-reference">
+                        <h3>प्रमुख-सन्धयः (Standard Sandhi Rules)</h3>
+                        <div id="sandhi-rules-grid" class="rules-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: Shlokas & Subhashitas View -->
+            <section id="shloka-view" class="tab-pane">
+                <div class="content-container">
+                    <div class="section-title">
+                        <h2>सुभाषितानि &amp; भगवद्गीता (Wisdom Verses)</h2>
+                        <p>Treasures of timeless Sanskrit poetry with word-by-word padachheda, prose order (anvaya), and philosophical insights.</p>
+                    </div>
+
+                    <div id="shlokas-collection-grid" class="shlokas-grid">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: Quiz Arena View -->
+            <section id="quiz-view" class="tab-pane">
+                <div class="content-container">
+                    <div class="section-title">
+                        <h2>संस्कृत-प्रश्नोत्तरी (Interactive Quiz Arena)</h2>
+                        <p>Test and sharpen your vocabulary, vibhakti identification, dhatu lakaras, and sandhi rules.</p>
+                    </div>
+
+                    <div class="quiz-arena-card card">
+                        <div class="arena-header">
+                            <div class="arena-score">
+                                <span>अङ्काः (Score):</span>
+                                <strong id="arena-score-display">0 / 0</strong>
+                            </div>
+                            <button id="btn-arena-next" class="btn-secondary"><i class="fa-solid fa-forward"></i> नवीन-प्रश्नः (New Question)</button>
+                        </div>
+
+                        <div id="arena-question-container" class="arena-question-container">
+                            <p class="loading-text">प्रश्नः आगच्छति... (Loading question...)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
